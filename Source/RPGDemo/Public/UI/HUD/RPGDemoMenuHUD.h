@@ -9,8 +9,9 @@
 /**
  * 
  */
-
 class SRPGDemoMenuHUDWidget;
+
+DECLARE_DELEGATE(FSEButtonOnClicked)
 
 UCLASS()
 class RPGDEMO_API ARPGDemoMenuHUD : public AHUD

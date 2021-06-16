@@ -37,11 +37,11 @@ END_SLATE_FUNCTION_BUILD_OPTIMIZATION
 void SRPGDemoSEButton_V1::Tick(const FGeometry& AllottedGeometry, const double InCurrentTime, const float InDeltaTime)
 {
 	SCompoundWidget::Tick(AllottedGeometry, InCurrentTime, InDeltaTime);
-	if (CurrentAnim != ESEButtonAnim::None)
+	if (CurrentAnim != SEWidgetAnim::None)
 	{
 		switch(CurrentAnim)
 		{
-		case ESEButtonAnim::ToLeft:
+		case SEWidgetAnim::ToLeft:
 			AnimPercent = FMath::Clamp<float>(AnimPercent + InDeltaTime * 1.f / ANIM_TIME, 0.f, 1.f);
 			if (AnimPercent > 0.5f)
 			{
@@ -60,11 +60,11 @@ void SRPGDemoSEButton_V1::Tick(const FGeometry& AllottedGeometry, const double I
 
 			if (AnimPercent >= 1.f)
 			{
-				CurrentAnim = ESEButtonAnim::None;
+				CurrentAnim = SEWidgetAnim::None;
 			}
 			break;
 
-		case ESEButtonAnim::ToRight:
+		case SEWidgetAnim::ToRight:
 			AnimPercent = FMath::Clamp<float>(AnimPercent - InDeltaTime * 1.f / ANIM_TIME, 0.f, 1.f);
 			if (AnimPercent < 0.5f)
 			{
@@ -82,7 +82,7 @@ void SRPGDemoSEButton_V1::Tick(const FGeometry& AllottedGeometry, const double I
 			}
 			if (AnimPercent <= 0.f)
 			{
-				CurrentAnim = ESEButtonAnim::None;
+				CurrentAnim = SEWidgetAnim::None;
 			}
 			break;
 		}
@@ -108,13 +108,13 @@ int32 SRPGDemoSEButton_V1::OnPaint(const FPaintArgs& Args, const FGeometry& Allo
 
 void SRPGDemoSEButton_V1::OnMouseEnter(const FGeometry& MyGeometry, const FPointerEvent& MouseEvent)
 {
-	CurrentAnim = ESEButtonAnim::ToLeft;
+	CurrentAnim = SEWidgetAnim::ToLeft;
 	FSlateApplication::Get().PlaySound(MenuStyle->OnMouseEnterSound);
 }
 
 void SRPGDemoSEButton_V1::OnMouseLeave(const FPointerEvent& MouseEvent)
 {
-	CurrentAnim = ESEButtonAnim::ToRight;
+	CurrentAnim = SEWidgetAnim::ToRight;
 }
 
 FReply SRPGDemoSEButton_V1::OnMouseButtonDown(const FGeometry& MyGeometry, const FPointerEvent& MouseEvent)

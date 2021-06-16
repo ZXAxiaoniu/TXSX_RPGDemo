@@ -16,7 +16,8 @@
 #include "UI/Widget/SRPGDemoSEButton_V1.h"
 #include "UI/Widget/SRPGDemoMenuStartWidget.h"
 #include "UI/Widget/SRPGDemoOptionsWidget.h"
-
+#include "UI/Widget/SRPGDemoRegisterWidget.h"
+#include "UI/Widget/SRPGDemoEnterWidget.h"
 
 BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
 void SRPGDemoMenuHUDWidget::Construct(const FArguments& InArgs)
@@ -114,6 +115,31 @@ FVector2D SRPGDemoMenuHUDWidget::GetViewportSize() const
 
 void SRPGDemoMenuHUDWidget::InitializeChildWidgets()
 {
+	//初始化登录界面
+	TSharedPtr<SRPGDemoEnterWidget> EnterWidget;
+	SAssignNew(EnterWidget, SRPGDemoEnterWidget)
+		.OnGoBackClicked(this, &SRPGDemoMenuHUDWidget::OnGoBackClicked)
+		.OnEnterClicked(this, &SRPGDemoMenuHUDWidget::OnEnterWidgetEnterClicked)
+		.BindGetUsernameDelegate(&GetEnterUsernameDelegate)
+		.BindGetPasswordDelegate(&GetEnterPasswordDelegate);
+	WidgetContentMap.Add(EMenuContentID::Enter, EnterWidget);
+
+	//初始化注册界面
+	TSharedPtr<SRPGDemoRegisterWidget> RegisterWidget;
+	SAssignNew(RegisterWidget, SRPGDemoRegisterWidget)
+		.OnGoBackClicked(this, &SRPGDemoMenuHUDWidget::OnGoBackClicked)
+		.OnRegisterClicked(this, &SRPGDemoMenuHUDWidget::OnRegisterWidgetRegisterClicked)
+		.BindGetUsernameDelegate(&GetRegisterUsernameDelegate)
+		.BindGetPasswordDelegate(&GetRegisterPasswordDelegate)
+		.BindGetPasswordConfirmDelegate(&GetRegisterPasswordConfirmDelegate);
+	WidgetContentMap.Add(EMenuContentID::Register, RegisterWidget);
+
+	//初始化设置菜单
+	TSharedPtr<SRPGDemoOptionsWidget> OptionsWidget;
+	SAssignNew(OptionsWidget, SRPGDemoOptionsWidget)
+		.OnGoBackClicked(this, &SRPGDemoMenuHUDWidget::OnGoBackClicked);
+	WidgetContentMap.Add(EMenuContentID::Options, OptionsWidget);
+
 	//初始化初始菜单控件
 	TSharedPtr<SRPGDemoMenuStartWidget> StartMenuWidget;
 	SAssignNew(StartMenuWidget, SRPGDemoMenuStartWidget)
@@ -122,12 +148,6 @@ void SRPGDemoMenuHUDWidget::InitializeChildWidgets()
 		.OnOptionsClicked(this, &SRPGDemoMenuHUDWidget::OnOptionsClicked)
 		.OnQuitGameClicked(this, &SRPGDemoMenuHUDWidget::OnQuitGameClicked);
 	WidgetContentMap.Add(EMenuContentID::StartMenu, StartMenuWidget);
-
-	//初始化设置菜单
-	TSharedPtr<SRPGDemoOptionsWidget> OptionsWidget;
-	SAssignNew(OptionsWidget, SRPGDemoOptionsWidget)
-		.OnGoBackClicked(this, &SRPGDemoMenuHUDWidget::OnGoBackClicked);
-	WidgetContentMap.Add(EMenuContentID::Options, OptionsWidget);
 }
 
 void SRPGDemoMenuHUDWidget::StartChangeChildWidgetAnim(EMenuContentID::Type WidgetID)
@@ -144,6 +164,18 @@ void SRPGDemoMenuHUDWidget::ChangeChildWidget(EMenuContentID::Type WidgetID)
 	//如果MenuType是None
 	if (WidgetID == EMenuContentID::None) return;
 
+	//如果是Enter还有Register，需要重置输入框
+	if (WidgetID == EMenuContentID::Enter)
+	{
+		SRPGDemoEnterWidget* EnterWidget = StaticCast<SRPGDemoEnterWidget*>((*(WidgetContentMap.Find(WidgetID))).Get());
+		EnterWidget->ClearText();
+	}
+	else if (WidgetID == EMenuContentID::Register)
+	{
+		SRPGDemoRegisterWidget * RegisterWidget = StaticCast<SRPGDemoRegisterWidget*>((*(WidgetContentMap.Find(WidgetID))).Get());
+		RegisterWidget->ClearText();
+	}
+
 	ContentBox->AddSlot().AutoHeight()[(WidgetContentMap.Find(WidgetID))->ToSharedRef()];
 
 	CurrentContentID = WidgetID;
@@ -151,12 +183,12 @@ void SRPGDemoMenuHUDWidget::ChangeChildWidget(EMenuContentID::Type WidgetID)
 
 void SRPGDemoMenuHUDWidget::OnEnterClicked()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString("Enter"));
+	StartChangeChildWidgetAnim(EMenuContentID::Enter);
 }
 
 void SRPGDemoMenuHUDWidget::OnRegisterClicked()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString("Register"));
+	StartChangeChildWidgetAnim(EMenuContentID::Register);
 }
 
 void SRPGDemoMenuHUDWidget::OnOptionsClicked()
@@ -188,4 +220,32 @@ void SRPGDemoMenuHUDWidget::OnGoBackClicked()
 		return;
 	}
 	StartChangeChildWidgetAnim(EMenuContentID::StartMenu);
+}
+
+void SRPGDemoMenuHUDWidget::OnRegisterWidgetRegisterClicked()
+{
+	FText Username;
+	GetRegisterUsernameDelegate.ExecuteIfBound(Username);
+
+	FText Password;
+	GetRegisterPasswordDelegate.ExecuteIfBound(Password);
+
+	FText PasswordConfirm;
+	GetRegisterPasswordConfirmDelegate.ExecuteIfBound(PasswordConfirm);
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString("PasswordConfirm:  ") + PasswordConfirm.ToString());
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString("Password:  ") + Password.ToString());
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString("Username:  ") + Username.ToString());
+}
+
+void SRPGDemoMenuHUDWidget::OnEnterWidgetEnterClicked()
+{
+	FText Username;
+	GetEnterUsernameDelegate.ExecuteIfBound(Username);
+
+	FText Password;
+	GetEnterPasswordDelegate.ExecuteIfBound(Password);
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString("Password:  ") + Password.ToString());
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString("Username:  ") + Username.ToString());
 }

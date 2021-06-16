@@ -10,9 +10,11 @@
 #include "Widgets/Input/SEditableTextBox.h"
 
 //
-#include "UI/WidgetStyle/RPGDemoMenuSlateWidgetStyle.h"
 #include "Class/RPGDemoStyles.h"
+
+#include "UI/WidgetStyle/RPGDemoMenuSlateWidgetStyle.h"
 #include "UI/Widget/SRPGDemoSEButton_V1.h"
+
 
 
 BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION

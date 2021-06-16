@@ -19,7 +19,7 @@ ARPGDemoMenuHUD::ARPGDemoMenuHUD()
 {
 	if (GEngine && GEngine->GameViewport)
 	{
-		FMenuHUDButtonDown Delegate;
+		FSEButtonOnClicked Delegate;
 		Delegate.BindUObject(this, &ARPGDemoMenuHUD::QuitGame);
 		SAssignNew(MenuHUDWidget, SRPGDemoMenuHUDWidget).OnQuitGameDelegate(Delegate);
 		//弱控件会对子控件增加一个弱指针

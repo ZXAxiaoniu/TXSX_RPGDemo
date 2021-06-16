@@ -8,7 +8,7 @@
  * 
  */
 
-namespace ESEButtonAnim
+namespace SEWidgetAnim
 {
 	enum Type
 	{
@@ -17,6 +17,7 @@ namespace ESEButtonAnim
 		ToRight
 	};
 }
+
 
 namespace EMenuContentID
 {

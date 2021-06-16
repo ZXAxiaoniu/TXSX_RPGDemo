@@ -52,7 +52,7 @@ private:
 	TSharedPtr<STextBlock> TextBlock;
 
 	//记录当前播放的动画类型
-	ESEButtonAnim::Type CurrentAnim = ESEButtonAnim::None;
+	SEWidgetAnim::Type CurrentAnim = SEWidgetAnim::None;
 	//当前动画百分比
 	float AnimPercent = 0.0f;
 	//如果是0则表示当前使用的是未激活时候的颜色，1表示激活时候的颜色

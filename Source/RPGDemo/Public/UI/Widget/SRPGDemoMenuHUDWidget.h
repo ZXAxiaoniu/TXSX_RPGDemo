@@ -17,14 +17,15 @@
 struct FRPGDemoMenuSlateStyle;
 class SEditableTextBox;
 
-DECLARE_DELEGATE(FMenuHUDButtonDown)
+DECLARE_DELEGATE(FSEButtonOnClicked)
+DECLARE_DELEGATE_OneParam(FSEEditTextBoxGetText, FText&)
 
 class RPGDEMO_API SRPGDemoMenuHUDWidget : public SCompoundWidget
 {
 public:
 	SLATE_BEGIN_ARGS(SRPGDemoMenuHUDWidget)
 	{}
-	SLATE_EVENT(FMenuHUDButtonDown, OnQuitGameDelegate)
+	SLATE_EVENT(FSEButtonOnClicked, OnQuitGameDelegate)
 
 	SLATE_END_ARGS()
 
@@ -46,6 +47,7 @@ private:
 
 	void ChangeChildWidget(EMenuContentID::Type WidgetID);
 
+	//StartMenu下各个按钮绑定的操作
 	void OnEnterClicked();
 
 	void OnRegisterClicked();
@@ -55,6 +57,12 @@ private:
 	void OnQuitGameClicked();
 
 	void OnGoBackClicked();
+
+	//register下注册按钮绑定的操作
+	void OnRegisterWidgetRegisterClicked();
+
+	//enter下登录按钮绑定的操作
+	void OnEnterWidgetEnterClicked();
 
 private:
 	//DPI缩放
@@ -80,5 +88,14 @@ private:
 	const FRPGDemoMenuSlateStyle * MenuStyle;
 
 	//退出游戏委托
-	FMenuHUDButtonDown OnQuitGameDelegate;
+	FSEButtonOnClicked OnQuitGameDelegate;
+
+	//获取注册界面用户名，密码，密码确认的委托
+	FSEEditTextBoxGetText GetRegisterUsernameDelegate;
+	FSEEditTextBoxGetText GetRegisterPasswordDelegate;
+	FSEEditTextBoxGetText GetRegisterPasswordConfirmDelegate;
+
+	//获取登录界面用户名，密码的委托
+	FSEEditTextBoxGetText GetEnterUsernameDelegate;
+	FSEEditTextBoxGetText GetEnterPasswordDelegate;
 };
